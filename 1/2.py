@@ -1,5 +1,9 @@
-a = int(input('Введите первое число: '))
-b = int(input('Введите второе число: '))
+try:
+    a = int(input('Введите первое число: '))
+    b = int(input('Введите второе число: '))
+except ValueError:
+    print('Вы ввели не число')
+    exit()
 
 operation_list = ['+', '-', '*', '/']
 operation = input('Введите арифметическую операцию: ')
