@@ -2,7 +2,7 @@ a = int(input('Введите первое число: '))
 b = int(input('Введите второе число: '))
 
 operation_list = ['+', '-', '*', '/']
-operation = input('введите знак операции: ')
+operation = input('Введите арифметическую операцию: ')
 
 if operation not in operation_list:
     print('Вы ввели неверный знак операции')
@@ -10,12 +10,12 @@ if operation not in operation_list:
 else:
     try:
         if operation == '+':
-            print(a + b)
+            print(f'Результат арифметического действия: {a} + {b} = {a + b}')
         if operation == '-':
-            print(a - b)
+            print(f'Результат арифметического действия: {a} - {b} = {a - b}')
         if operation == '*':
-            print(a * b)
+            print(f'Результат арифметического действия: {a} * {b} = {a * b}')
         if operation == '/':
-            print(a / b)
+            print(f'Результат арифметического действия: {a} / {b} = {a / b}')
     except ZeroDivisionError:
         print('Деление на ноль')
