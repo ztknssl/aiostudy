@@ -9,14 +9,14 @@ from collections import Counter
 
 # Считываем ввод. Если вставить текст из коммента сверху, то работать не будет из-за наличия там переносов строк
 text = input('Введите текст: ')
-#
-# # Приводим к нижнему регистру, вырезаем лишнее, обрезаем строку и преобразуем в список
+
+# Приводим к нижнему регистру, вырезаем лишнее, обрезаем строку и преобразуем в список
 text = text.casefold()
-word_list = text.strip().replace("’", '').replace("‘", '').replace('!', '')
-word_list = word_list.replace('.', '').replace('-', '').split()
-#
-# # Метод Counter вернет словарь вхождений в порядке убывания
-word_dict = Counter(word_list)
+text = text.strip().replace("’", '').replace("‘", '').replace('!', '')
+word_list = text.replace('.', '').replace('-', '').split()
+
+# Метод Counter вернет коллекцию вхождений в порядке убывания
+word_dict = dict(Counter(word_list))
 
 print(word_dict)
 
@@ -25,8 +25,8 @@ print(word_dict)
 
 # text = input('Введите текст: ')
 # text = text.casefold()
-# word_list = text.strip().replace("’", '').replace("‘", '').replace('!', '')
-# word_list = word_list.replace('.', '').replace('-', '').split()
+# text = text.strip().replace("’", '').replace("‘", '').replace('!', '')
+# word_list = text.replace('.', '').replace('-', '').split()
 #
 # # Создаем пустой словарь и заполняем парами ключ:значение, предварительно проверяя наличие ключа
 # word_dict = {}
