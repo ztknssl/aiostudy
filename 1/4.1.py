@@ -15,7 +15,7 @@ text = text.casefold()
 text = text.strip().replace("’", '').replace("‘", '').replace('!', '')
 word_list = text.replace('.', '').replace('-', '').split()
 
-# Метод Counter вернет коллекцию вхождений в порядке убывания
+# Counter вернет коллекцию вхождений в порядке убывания
 word_dict = dict(Counter(word_list))
 
 print(word_dict)
