@@ -13,7 +13,7 @@ text = input('Введите текст: ')
 # Приводим к нижнему регистру, вырезаем лишнее, обрезаем строку и преобразуем в список
 text = text.casefold()
 text = text.strip().replace("’", '').replace("‘", '').replace('!', '')
-word_list = text.replace('.', '').replace('-', '').split()
+word_list = text.replace('.', '').replace('-', '').replace(',', '').split()
 
 # Counter вернет коллекцию вхождений в порядке убывания
 word_dict = dict(Counter(word_list))
