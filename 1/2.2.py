@@ -10,7 +10,7 @@ while True:
 # Определяем список операций
 operation_list = ['+', '-', '*', '/']
 
-# Проверка операции
+# Проверка операции на нахождение в списке разрешенных
 while True:
     operation = input('Введите арифметическую операцию: ')
     if operation not in operation_list:
@@ -18,15 +18,17 @@ while True:
     else:
         break
 
+# Можно через if, но match/case короче и читабельнее
 try:
-    if operation == '+':
-        print(f'Результат арифметического действия: {a} + {b} = {a + b}')
-    elif operation == '-':
-        print(f'Результат арифметического действия: {a} - {b} = {a - b}')
-    elif operation == '*':
-        print(f'Результат арифметического действия: {a} * {b} = {a * b}')
-    elif operation == '/':
-        print(f'Результат арифметического действия: {a} / {b} = {a / b}')
+    match operation:
+        case '+':
+            print(f'Результат арифметического действия: {a} + {b} = {a + b}')
+        case '-':
+            print(f'Результат арифметического действия: {a} - {b} = {a - b}')
+        case '*':
+            print(f'Результат арифметического действия: {a} * {b} = {a * b}')
+        case '/':
+            print(f'Результат арифметического действия: {a} / {b} = {a / b}')
 except ZeroDivisionError:
     print('Деление на ноль')
 
