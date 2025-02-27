@@ -51,7 +51,8 @@ def get_data(query_params_list: list) -> None:
 
 def main():
     query_params_list = get_query_params(coins_list)
-    if query_params_list:  # Проверяем, что список не пустой
+    # Проверяем, что список не пустой
+    if query_params_list:
         get_data(query_params_list)
 
 
