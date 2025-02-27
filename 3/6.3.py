@@ -11,13 +11,14 @@ coins_list = ['BTC_USDT', 'ETH_USDT', 'SOL_USDT']
 # Декоратор для отлова исключений
 def error_catcher(function):
     def new_func(*args):
+        msg = f'An error occurred in: {function.__name__}'
         try:
             return function(*args)
         except requests.RequestException as err:
-            print(f'An error occurred in: {function.__name__}')
+            print(msg)
             print(f'Request error: {err}')
         except Exception as err:
-            print(f'An error occurred in: {function.__name__}')
+            print(msg)
             print(f'Other error: {err}')
     return new_func
 
