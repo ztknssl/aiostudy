@@ -1,8 +1,8 @@
 # Попытка сделать middlware для обработки исключений и упорядочить код
 import requests
 
-host = "https://api.gateio.ws"
-prefix = "/api/v4"
+host = 'https://api.gateio.ws'
+prefix = '/api/v4'
 headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
 url = '/spot/order_book'
 coins_list = ['BTC_USDT', 'ETH_USDT', 'SOL_USDT']
@@ -33,7 +33,7 @@ def get_query_params(list_: list) -> list:
 @error_catcher
 def get_data(query_params_list: list) -> None:
     for query_param in query_params_list:
-        response = requests.get(f"{host}{prefix}{url}?{query_param}", headers=headers)
+        response = requests.get(f'{host}{prefix}{url}?{query_param}', headers=headers)
 
         # Проверяем статус ответа
         response.raise_for_status()
@@ -66,8 +66,8 @@ if __name__ == '__main__':
 # 2 вариант попроще(изначальный)
 # import requests
 #
-# host = "https://api.gateio.ws"
-# prefix = "/api/v4"
+# host = 'https://api.gateio.ws'
+# prefix = '/api/v4'
 # headers = {'Accept': 'application/json', 'Content-Type': 'application/json'}
 # url = '/spot/order_book'
 # coins_list = ['BTC_USDT', 'ETH_USDT', 'SOL_USDT']
@@ -76,7 +76,7 @@ if __name__ == '__main__':
 # for currency_pair in coins_list:
 #     try:
 #         query_param = f'currency_pair={currency_pair}'
-#         response = requests.get(f"{host}{prefix}{url}?{query_param}", headers=headers)
+#         response = requests.get(f'{host}{prefix}{url}?{query_param}', headers=headers)
 #
 #         # Проверяем статус ответа
 #         response.raise_for_status()
