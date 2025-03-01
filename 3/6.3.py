@@ -108,8 +108,8 @@ if __name__ == '__main__':
 #
 # coins_list = ['BTC_USDT', 'ETH_USDT', 'SOL_USDT']
 #
-# try:
-#     for pair in coins_list:
+# for pair in coins_list:
+#     try:
 #         pair = pair.replace('_', '/')
 #
 #         # Получаем данные для конкретной пары
@@ -121,5 +121,9 @@ if __name__ == '__main__':
 #         print(f'Текущая цена продажи для {pair.split("/")[0]}: {ask}')
 #         print(f'Текущая цена покупки для {pair.split("/")[0]}: {bid}')
 #         print('----------')
-# except Exception as err:
-#     print(f'An error occured: {err}')
+#     except ccxt.NetworkError as e:
+#         print(exchange.id, 'fetch_order_book failed due to a network error:', str(e))
+#     except ccxt.ExchangeError as e:
+#         print(exchange.id, 'fetch_order_book failed due to exchange error:', str(e))
+#     except Exception as e:
+#         print(exchange.id, 'fetch_order_book failed with:', str(e))
