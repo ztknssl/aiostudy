@@ -107,9 +107,6 @@ if __name__ == '__main__':
 #
 # coins_list = ['BTC_USDT', 'ETH_USDT', 'SOL_USDT']
 #
-# # Загружаем все пары на споте
-# pairs = exchange.load_markets()
-#
 # for pair in coins_list:
 #     pair = pair.replace('_', '/')
 #
