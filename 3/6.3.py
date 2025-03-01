@@ -14,6 +14,7 @@ def error_catcher(function):
         msg = f'An error occurred in: {function.__name__}'
         try:
             return function(*args)
+        # Решил оставить общий класс на всякий случай
         except requests.RequestException as err:
             print(msg)
             print(f'Request error: {err}')
@@ -35,7 +36,7 @@ def get_data(query_params_list: list) -> None:
     for query_param in query_params_list:
         response = requests.get(f'{host}{prefix}{url}?{query_param}', headers=headers)
 
-        # Проверяем статус ответа
+        # Рейзим HTTPError, если она есть
         response.raise_for_status()
 
         # Получаем название монеты из параметра запроса
