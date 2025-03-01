@@ -95,3 +95,30 @@ if __name__ == '__main__':
 #         print(f'HTTP error occured: {err}')
 #     except Exception as err:
 #         print(f'Other error occured: {err}')
+
+
+# 3 вариант
+# Решил пощупать библиотеку ccxt. С гейтом работает очень медленно - бинанс намного быстрее
+
+# import ccxt
+#
+# # Выбор биржи
+# exchange = ccxt.gateio()
+#
+# coins_list = ['BTC_USDT', 'ETH_USDT', 'SOL_USDT']
+#
+# # Загружаем все пары на споте
+# pairs = exchange.load_markets()
+#
+# for pair in coins_list:
+#     pair = pair.replace('_', '/')
+#
+#     # Получаем данные для конкретной пары
+#     order_book = exchange.fetch_order_book(pair)
+#
+#     bid = order_book['bids'][0][0]
+#     ask = order_book['asks'][0][0]
+#
+#     print(f'Текущая цена продажи для {pair.split("/")[0]}: {ask}')
+#     print(f'Текущая цена покупки для {pair.split("/")[0]}: {bid}')
+#     print('----------')
