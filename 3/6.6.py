@@ -58,8 +58,9 @@ def json_writer(list_: list, filename: str) -> None:
 
 def main():
     filename_okx = 'okx_coins_reduced.json'
-    if get_okx_data():
-        json_writer(get_okx_data(), filename=filename_okx)
+    okx_data = get_okx_data()
+    if okx_data:
+        json_writer(okx_data, filename=filename_okx)
 
 if __name__ == '__main__':
     main()
