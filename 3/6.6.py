@@ -1,7 +1,4 @@
-from json import JSONDecodeError
-import okx.PublicData as PublicData
-import json
-from okx.app.exception import AbstractEXP
+import requests
 
 
 # Декоратор для отлова исключений
@@ -10,12 +7,9 @@ def error_catcher(function):
         msg = f'An error occurred in: {function.__name__}'
         try:
             return function(*args, **kwargs)
-        except AbstractEXP as err:
+        except requests.RequestException as err:
             print(msg)
-            print(f'OKX API error: {err}')
-        except JSONDecodeError as err:
-            print(msg)
-            print(f'JSON decoding error: {err}')
+            print(f'Request error: {err}')
         except Exception as err:
             print(msg)
             print(f'Other error: {err}')
@@ -23,45 +17,77 @@ def error_catcher(function):
 
 
 @error_catcher
-def get_okx_data() -> list:
-    flag = "0"  # Production trading: 0, Demo trading: 1
-    okx_coins_list = []
+def get_bybit_data() -> list:
+    host = 'https://api-testnet.bybit.com'
+    prefix = '/v5/market'
+    url = '/tickers'
+    params = {
+        'category': 'spot',
+    }
 
-    public_data_api = PublicData.PublicAPI(flag=flag)
+    response = requests.get(f'{host}{prefix}{url}', params=params)
 
-    # Получаем все данные со спота okx
-    result = public_data_api.get_instruments(
-        instType="SPOT"
-    )
+    # Рейзим HTTPError, если она есть
+    response.raise_for_status()
 
-    # Получаем список тикеров из всех пар
-    if isinstance(result, dict) and 'data' in result:
-        for data in result['data']:
-            okx_coins_list.append(data['baseCcy'])
-        # Убираем дубликаты
-        okx_coins_list = list(set(okx_coins_list))
+    # Получаем json и объявляем список тикеров
+    result = response.json()
+    bybit_tickers_list = []
+
+    if isinstance(result, dict) and 'result' in result:
+        if isinstance(result['result'], dict) and 'list' in result['result']:
+            for data in result['result']['list']:
+                ticker = ''
+                pair = data['symbol']
+                if pair.endswith('USDT'):
+                    ticker = pair.replace('USDT', '')
+                elif pair.endswith('USDC'):
+                    ticker = pair.replace('USDC', '')
+                else:
+                    continue
+                bybit_tickers_list.append(ticker)
+        else:
+            print('No key "list" found')
     else:
-        print('No such key in result')
+        print('No key "result" found')
 
-    return okx_coins_list
-
-
-def get_bybit_data():
-    pass
+    # Возвращаем список без повторных тикеров
+    return list(set(bybit_tickers_list))
 
 
 @error_catcher
-def json_writer(list_: list, filename: str) -> None:
-    with open(filename, 'w', encoding='utf-8') as file:
-        json.dump(list_, file)
+def get_okx_data() -> list:
+    host = 'https://www.okx.com'
+    prefix = '/api/v5/public/instruments'
+    params = {
+        'instType': 'SPOT'
+    }
+
+    response = requests.get(f'{host}{prefix}', params=params)
+
+    # Рейзим HTTPError, если она есть
+    response.raise_for_status()
+
+    # Получаем json и объявляем список тикеров
+    result = response.json()
+    okx_tickers_list = []
+
+    if isinstance(result, dict) and 'data' in result:
+        for pair_info in result['data']:
+            okx_tickers_list.append(pair_info['baseCcy'])
+    else:
+        print('No key "data" in result found')
+    # Возвращаем список без повторных тикеров
+    return list(set(okx_tickers_list))
 
 
+@error_catcher
 def main():
-    filename_okx = 'okx_coins_reduced.json'
-    okx_data = get_okx_data()
-    if okx_data:
-        json_writer(okx_data, filename=filename_okx)
+    data_bybit = get_bybit_data()
+    data_okx = get_okx_data()
+    print(len(data_bybit))
+    print(len(data_okx))
+
 
 if __name__ == '__main__':
     main()
-
