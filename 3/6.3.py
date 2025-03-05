@@ -50,7 +50,7 @@ def get_data(query_params_list: list) -> None:
         print(f'Текущая цена покупки для {currency_name}: {bid}')
         print('----------')
 
-
+@error_catcher
 def main():
     query_params_list = get_query_params(coins_list)
     # Проверяем, что список не пустой
