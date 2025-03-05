@@ -1,3 +1,5 @@
+import json
+
 import requests
 
 
@@ -15,17 +17,17 @@ def error_catcher(function):
             print(f'Other error: {err}')
     return new_func
 
-
+# Получаем список тикеров с биржи bybit
 @error_catcher
 def get_bybit_data() -> list:
-    host = 'https://api-testnet.bybit.com'
-    prefix = '/v5/market'
-    url = '/tickers'
+    host = 'https://api.bybit.com'
+    version = '/v5/market'
+    product = '/tickers'
     params = {
         'category': 'spot',
     }
 
-    response = requests.get(f'{host}{prefix}{url}', params=params)
+    response = requests.get(f'{host}{version}{product}', params=params)
 
     # Рейзим HTTPError, если она есть
     response.raise_for_status()
@@ -55,6 +57,7 @@ def get_bybit_data() -> list:
     return list(set(bybit_tickers_list))
 
 
+# Получаем список тикеров с биржи okx
 @error_catcher
 def get_okx_data() -> list:
     host = 'https://www.okx.com'
@@ -81,12 +84,46 @@ def get_okx_data() -> list:
     return list(set(okx_tickers_list))
 
 
+# Получаем список совпадений по тикерам
+@error_catcher
+def ticker_intersection(list1: list, list2: list) -> list:
+    return sorted(list(set(list1).intersection(set(list2))))
+
+
+@error_catcher
+def json_writer(list_: list, filename: str) -> None:
+    with open(f'{filename}.json', 'w', encoding='utf-8') as file:
+        json.dump(list_, file)
+
+
+@error_catcher
+def json_reader(filename: str) -> list:
+    pass
+
+
 @error_catcher
 def main():
-    data_bybit = get_bybit_data()
-    data_okx = get_okx_data()
-    print(len(data_bybit))
-    print(len(data_okx))
+    # Получаем списки монет
+    data_bybit = sorted(get_bybit_data())
+    data_okx = sorted(get_okx_data())
+
+    # Итоговый список монет
+    final_tickers_list = []
+    if data_bybit and data_okx:
+        final_tickers_list = ticker_intersection(data_bybit, data_okx)
+
+    filename = 'final_tickers_list'
+    json_writer(list_=final_tickers_list, filename=filename)
+
+    with open('final_tickers_list.json', 'r', encoding='utf-8') as file:
+        data = file.read()
+        print(data)
+
+
+
+
+
+
 
 
 if __name__ == '__main__':
