@@ -1,5 +1,4 @@
 import json
-
 import requests
 
 
@@ -92,13 +91,15 @@ def ticker_intersection(list1: list, list2: list) -> list:
 
 @error_catcher
 def json_writer(list_: list, filename: str) -> None:
-    with open(f'{filename}.json', 'w', encoding='utf-8') as file:
+    with open(filename, 'w', encoding='utf-8') as file:
         json.dump(list_, file)
 
 
 @error_catcher
 def json_reader(filename: str) -> list:
-    pass
+    with open('final_tickers_list.json', 'r', encoding='utf-8') as file:
+        data = json.load(file)
+    return data
 
 
 @error_catcher
@@ -112,14 +113,10 @@ def main():
     if data_bybit and data_okx:
         final_tickers_list = ticker_intersection(data_bybit, data_okx)
 
-    filename = 'final_tickers_list'
+    filename = 'final_tickers_list.json'
     json_writer(list_=final_tickers_list, filename=filename)
-
-    with open('final_tickers_list.json', 'r', encoding='utf-8') as file:
-        data = file.read()
-        print(data)
-
-
+    data = json_reader(filename=filename)
+    print(data)
 
 
 
