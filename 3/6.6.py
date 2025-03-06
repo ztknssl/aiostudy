@@ -36,7 +36,6 @@ def get_bybit_data() -> list:
     # Получаем json и объявляем список тикеров
     result = response.json()
     bybit_tickers_list = []
-    bybit_tickers_list_full = []
 
     if isinstance(result, dict) and 'result' in result:
         if isinstance(result['result'], dict) and 'list' in result['result']:
@@ -44,13 +43,11 @@ def get_bybit_data() -> list:
                 ticker = ''
                 pair = data['symbol']
                 if pair.endswith('USDT'):
-                    bybit_tickers_list_full.append(pair)
                     ticker = pair.replace('USDT', '')
-                elif pair.endswith('USDC'):
-                    bybit_tickers_list_full.append(pair)
-                    ticker = pair.replace('USDC', '')
-                else:
-                    continue
+                # Это решил убрать, так как она okx нет пар к USDC, но если появятся, то можно по такой логике добавлять
+                # elif pair.endswith('USDC'):
+                #     ticker = pair.replace('USDC', '')
+
                 bybit_tickers_list.append(ticker)
         else:
             print('No key "list" found')
@@ -58,7 +55,7 @@ def get_bybit_data() -> list:
         print('No key "result" found')
 
     # Возвращаем список без повторных тикеров  и список с полным названием пары
-    return sorted(list(set(bybit_tickers_list))), sorted(list(set(bybit_tickers_list_full)))
+    return sorted(list(set(bybit_tickers_list)))
 
 
 # Получаем список тикеров с биржи okx
@@ -131,14 +128,14 @@ def get_okx_prices(tickers_list: list) -> dict:
     return okx_prices_dict
 
 
-def get_bybit_prices(pairs_list: list) -> dict:
+def get_bybit_prices(tickers_list: list) -> dict:
     host = 'https://api.bybit.com'
     version = '/v5/market'
     product = '/orderbook'
     bybit_prices_dict = {}
 
-    for pair in pairs_list:
-        response = requests.get(f'{host}{version}{product}?category=spot&symbol={pair}')
+    for ticker in tickers_list:
+        response = requests.get(f'{host}{version}{product}?category=spot&symbol={ticker}USDT')
 
         # Рейзим HTTPError, если она есть
         response.raise_for_status()
@@ -148,51 +145,44 @@ def get_bybit_prices(pairs_list: list) -> dict:
             best_ask = result['result']['a'][0][0]
             best_bid = result['result']['b'][0][0]
 
-            bybit_prices_dict[f'{pair}'] = [best_bid, best_ask]
+            bybit_prices_dict[f'{ticker}'] = [best_bid, best_ask]
 
     return bybit_prices_dict
-
-
-"""
-{'retCode': 0,
- 'retMsg': 'OK', 
- 'result': 
-    {'s': 'BTCUSDT', 
-    'a': [['90182.27', '0.321716']], 
-    'b': [['90182.26', '0.006652']], 
-    'ts': 1741267981810, 
-    'u': 3145017, 
-    'seq': 65073795396, 
-    'cts': 1741267981803}, 
-    'retExtInfo': {}, 
-    'time': 1741267981872}
-"""
 
 
 @error_catcher
 def main():
     # Получаем списки монет
-    data_bybit, data_bybit_full = get_bybit_data()
+    data_bybit = get_bybit_data()
     data_okx = get_okx_data()
 
     # Итоговый список монет
     final_tickers_list = []
-
     if data_bybit and data_okx:
         final_tickers_list = ticker_intersection(data_bybit, data_okx)
 
     filename = 'final_tickers_list.json'
+
+    # Пишем и снова читаем) Не знаю зачем, но в задании так
     json_writer(data=final_tickers_list, filename=filename)
     data = json_reader(filename=filename)
 
-    # Получаем словарь цен с биржи okx
+    # Получаем словари цен с биржи okx и bybit
     okx_prices_dict = {}
+    bybit_prices_dict = {}
+    okx_json_filename = 'okx_prices.json'
+    bybit_json_filename = 'bybit_prices.json'
     if data:
         okx_prices_dict = get_okx_prices(data)
 
         # Записываем данные с okx в json
-    okx_json_filename = 'okx_prices.json'
-    json_writer(data=okx_prices_dict, filename=okx_json_filename)
+        json_writer(data=okx_prices_dict, filename=okx_json_filename)
+
+        # Получаем словарь цен с биржи bybit
+        bybit_prices_dict = get_bybit_prices(data)
+
+        # Записываем данные с bybit в json
+        json_writer(bybit_prices_dict, filename=bybit_json_filename)
 
 
 if __name__ == '__main__':
