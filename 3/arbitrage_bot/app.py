@@ -37,7 +37,7 @@ def main():
         # Записываем данные с биржи okx в json
         json_writer(data=okx_prices_dict, filename=okx_json_filename)
 
-        # Получаем словарь цен с биржи bybit
+        # Получаем цены с биржи bybit
         bybit_prices_dict = get_bybit_prices(data)
 
         # Записываем данные с bybit в json

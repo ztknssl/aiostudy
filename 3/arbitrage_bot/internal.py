@@ -1,4 +1,5 @@
 from err_handler import error_catcher
+from decimal import Decimal
 
 # Функция для получения списка совпадений по тикерам
 @error_catcher
@@ -12,7 +13,7 @@ quantity - количество токенов, которое можно куп
 profit - общий округленный профит в $
 """
 @error_catcher
-def display_info(ticker: str, buy_exchange: str, sell_exchange: str, bid: float, ask: float) -> None:
+def display_info(ticker: str, buy_exchange: str, sell_exchange: str, bid: Decimal, ask: Decimal) -> None:
     total = 100000
     quantity = 0
     if bid != 0:
@@ -35,16 +36,16 @@ def display_info(ticker: str, buy_exchange: str, sell_exchange: str, bid: float,
 @error_catcher
 def arbitrage(dict_1:dict, dict_2: dict) -> None:
     for ticker in dict_1:
-        if float(dict_1[ticker][0]) > float(dict_2[ticker][1]):
+        if Decimal(dict_1[ticker][0]) > Decimal(dict_2[ticker][1]):
             buy_exchange = 'Bybit'
             sell_exchange = 'OKX'
-            bid = float(dict_1[ticker][0])
-            ask = float(dict_2[ticker][1])
-        elif float(dict_2[ticker][0]) > float(dict_1[ticker][1]):
+            bid = Decimal(dict_1[ticker][0])
+            ask = Decimal(dict_2[ticker][1])
+        elif Decimal(dict_2[ticker][0]) > Decimal(dict_1[ticker][1]):
             buy_exchange = 'OKX'
             sell_exchange = 'Bybit'
-            bid = float(dict_2[ticker][0])
-            ask = float(dict_1[ticker][1])
+            bid = Decimal(dict_2[ticker][0])
+            ask = Decimal(dict_1[ticker][1])
         else:
             continue
         display_info(ticker=ticker, buy_exchange=buy_exchange, sell_exchange=sell_exchange, bid=bid, ask=ask)
