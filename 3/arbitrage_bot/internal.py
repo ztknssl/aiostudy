@@ -20,8 +20,8 @@ def display_info(ticker: str, buy_exchange: str, sell_exchange: str, bid: float,
     profit = round(quantity * (bid - ask))
 
     print(f'Нашел спред на монете {ticker}')
-    print(f'Покупка на бирже {buy_exchange}')
-    print(f'Нашел спред на монете {sell_exchange}')
+    print(f'Покупка на бирже {buy_exchange} по цене {ask}')
+    print(f'Продажа на бирже {sell_exchange} по цене {bid}')
     print(f'Профит: {profit} $')
     print()
     print('----------------------------------------')
