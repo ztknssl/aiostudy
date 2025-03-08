@@ -37,13 +37,13 @@ def display_info(ticker: str, buy_exchange: str, sell_exchange: str, bid: float,
 def arbitrage(dict_1:dict, dict_2: dict) -> None:
     for ticker in dict_1:
         if float(dict_1[ticker][0]) > float(dict_2[ticker][1]):
-            buy_exchange = 'OKX'
-            sell_exchange = 'Bybit'
+            buy_exchange = 'Bybit'
+            sell_exchange = 'OKX'
             bid = float(dict_1[ticker][0])
             ask = float(dict_2[ticker][1])
         elif float(dict_2[ticker][0]) > float(dict_1[ticker][1]):
-            buy_exchange = 'Bybit'
-            sell_exchange = 'OKX'
+            buy_exchange = 'OKX'
+            sell_exchange = 'Bybit'
             bid = float(dict_2[ticker][0])
             ask = float(dict_1[ticker][1])
         else:
