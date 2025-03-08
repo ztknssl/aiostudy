@@ -23,7 +23,6 @@ def display_info(ticker: str, buy_exchange: str, sell_exchange: str, bid: float,
     print(f'Покупка на бирже {buy_exchange} по цене {ask}')
     print(f'Продажа на бирже {sell_exchange} по цене {bid}')
     print(f'Профит: {profit} $')
-    print()
     print('----------------------------------------')
 
 
