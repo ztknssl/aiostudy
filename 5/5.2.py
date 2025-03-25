@@ -32,6 +32,6 @@ asyncio.run(main())
 #     # Уставнавливаем return_exceptions=True, чтобы не прерывать выполнение остальных задач, если
 #     # в какой-то возникнет исключение
 #
-#     await asyncio.gather(*(print_message(item) for item in list_), return_exceptions=True)#
+#     await asyncio.gather(*(print_message(item) for item in list_), return_exceptions=True)
 #
 # asyncio.run(main())
