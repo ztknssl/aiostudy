@@ -1,5 +1,5 @@
 from json import JSONDecodeError
-from typing import TypeVar, Callable
+from typing import TypeVar, Callable, Optional
 from collections.abc import Awaitable
 from functools import wraps
 import aiohttp
@@ -8,28 +8,27 @@ from logger import logger
 T = TypeVar('T')
 
 """ Декоратор для отлова исключений в асинхронных функциях """
-def async_error_catcher(function: Callable[..., Awaitable[T]]) -> Callable[..., Awaitable[T]]:
+def async_error_catcher(function: Callable[..., Awaitable[T]]) -> Callable[..., Awaitable[Optional[T]]]:
     msg = f'An error occurred in: {function.__name__}'
 
     @wraps(function)
-    async def async_func(*args, **kwargs):
+    async def async_func(*args, **kwargs) -> Optional[T]:
         try:
             return await function(*args, **kwargs)
         except aiohttp.ClientError as err:
-            await logger.error(msg)
-            await logger.error(f'Request error: {err}')
-            return None
+            await logger.error(f"{msg}\nRequest error: {err}")
+        except aiohttp.ContentTypeError as err:
+            await logger.error(f"{msg}\nInvalid JSON response: {err}")
         except Exception as err:
-            await logger.error(msg)
-            await logger.error(f'Other error: {err}')
-            return None
+            await logger.error(f"{msg}\nOther error: {err}")
+        return None
 
     return async_func
 
 """ Декоратор для отлова исключений в синхронных функциях """
 #   Дополнительный синхронный логгер решил не создавать
 
-def error_catcher(function: Callable) -> T:
+def error_catcher(function: Callable) -> T | None:
     msg = f'An error occurred in: {function.__name__}'
 
     @wraps(function)
@@ -43,7 +42,7 @@ def error_catcher(function: Callable) -> T:
             print(msg)
             print(f'JSON encoding error: {err}')
         except Exception as err:
-            print(msg)
-            print(f'Other error: {err}')
+            print(f"{msg}\nError: {err}")
+            return None
 
     return sync_func

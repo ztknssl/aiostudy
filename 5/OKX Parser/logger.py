@@ -1,7 +1,5 @@
-from aiologger.loggers.json import JsonLogger
+import logging
+from aiologger import Logger
 
 
-logger = JsonLogger.with_default_handlers(
-            level='DEBUG',
-            serializer_kwargs={'ensure_ascii': False},
-        )
+logger = Logger.with_default_handlers(level=logging.DEBUG)

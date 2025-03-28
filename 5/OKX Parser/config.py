@@ -1,3 +1,3 @@
-URL = 'https://www.okx.com/api/v5/market/ticker'
+URL = 'https://www.okx.com/api/v5/market/book'
 TICKERS = ['BTC', 'ETH', 'BNB']
 FILENAME = 'okx.json'
