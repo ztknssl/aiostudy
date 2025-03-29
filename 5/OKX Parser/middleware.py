@@ -25,7 +25,6 @@ def async_error_catcher(function: Callable[..., Awaitable[T]]) -> Callable[..., 
     return async_func
 
 """ Декоратор для отлова исключений в синхронных функциях """
-
 def error_catcher(function: Callable) -> T | None:
     msg = f'An error occurred in: {function.__name__}'
 
