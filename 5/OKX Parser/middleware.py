@@ -1,7 +1,6 @@
-from json import JSONDecodeError
-from typing import TypeVar, Callable, Optional
-from collections.abc import Awaitable
 from functools import wraps
+from json import JSONDecodeError
+from typing import Callable, Awaitable, TypeVar, Optional, Any
 import aiohttp
 from logger import logger
 
@@ -16,17 +15,16 @@ def async_error_catcher(function: Callable[..., Awaitable[T]]) -> Callable[..., 
         try:
             return await function(*args, **kwargs)
         except aiohttp.ClientError as err:
-            await logger.error(f"{msg}\nRequest error: {err}")
+            logger.error(f"{msg}\nRequest error: {err}")
         except aiohttp.ContentTypeError as err:
-            await logger.error(f"{msg}\nInvalid JSON response: {err}")
+            logger.error(f"{msg}\nInvalid JSON response: {err}")
         except Exception as err:
-            await logger.error(f"{msg}\nOther error: {err}")
+            logger.error(f"{msg}\nOther error: {err}")
         return None
 
     return async_func
 
 """ Декоратор для отлова исключений в синхронных функциях """
-#   Дополнительный синхронный логгер решил не создавать
 
 def error_catcher(function: Callable) -> T | None:
     msg = f'An error occurred in: {function.__name__}'
@@ -36,13 +34,11 @@ def error_catcher(function: Callable) -> T | None:
         try:
             return function(*args, **kwargs)
         except PermissionError as err:
-            print(msg)
-            print(f'Permission denied: {err}')
+            logger.error(f'{msg}\nPermission denied: {err}')
         except JSONDecodeError as err:
-            print(msg)
-            print(f'JSON encoding error: {err}')
+            logger.error(f'{msg}\nJSON encoding error: {err}')
         except Exception as err:
-            print(f"{msg}\nError: {err}")
+            logger.error(f"{msg}\nError: {err}")
             return None
 
     return sync_func

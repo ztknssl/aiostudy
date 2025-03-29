@@ -1,5 +1,5 @@
-import logging
-from aiologger import Logger
+from loguru import logger
 
 
-logger = Logger.with_default_handlers(level=logging.DEBUG)
+# Настройка логгера с асинхронной очередью для вывода в консоль и запись в лог-файл
+logger.add("file.log", enqueue=True)
