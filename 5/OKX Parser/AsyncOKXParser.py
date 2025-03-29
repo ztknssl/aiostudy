@@ -33,27 +33,28 @@ class AsyncOKXParser:
             # сделал её None. Думаю, хуже не будет)
             self.session = None
 
-    async def get_order_book(self, symbol: str) -> Dict:
+    async def get_order_book(self, symbol: str, retries: int=3, delay: int=1) -> Dict:
         """Получает ордербук для конкретной монеты"""
         params = {
             "instId": f"{symbol}-USDT",
-            "sz": 5 # Глубину можно указать любую
+            "sz": 5  # Глубину можно указать любую
         }
 
-        try:
-            async with self.session.get(URL, params=params) as response:
-                response.raise_for_status()
-                data = await response.json()
-                return {
-                    "symbol": symbol,
-                    "data": data["data"][0] if data["data"] else None
-                }
-        except Exception as e:
-            logger.error(f"Ошибка при получении ордербука для {symbol}: {str(e)}", exc_info=True)
-            return {
-                "symbol": symbol,
-                "error": str(e)
-            }
+        for attempt in range(retries):
+            try:
+                async with self.session.get(URL, params=params) as response:
+                    response.raise_for_status()
+                    data = await response.json()
+                    return {
+                        "symbol": symbol,
+                        "data": data["data"][0] if data["data"] else None
+                    }
+            except Exception as e:
+                if attempt == retries - 1:
+                    logger.error(f"Ошибка при получении ордербука для {symbol}: {str(e)}", exc_info=True)
+                    return {"symbol": symbol, "error": str(e)}
+                logger.warning(f"Попытка {attempt + 1} не удалась для {symbol}, повторяем...")
+                await asyncio.sleep(delay)
 
     async def fetch_all_order_books(self, symbols: List[str]) -> List[Dict]:
         """Получаем ордербуки для всех монет"""
