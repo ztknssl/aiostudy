@@ -17,7 +17,6 @@ if sys.platform:
 class AsyncOKXParser:
     """ Класс AsyncOKXParser представляет из себя контекстный менеджер для работы в единой сессии """
     def __init__(self):
-        #
         self.session: Optional[aiohttp.ClientSession] = None
 
     async def __aenter__(self):

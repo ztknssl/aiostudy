@@ -1,6 +1,5 @@
 from functools import wraps
 from json import JSONDecodeError
-from sys import exc_info
 from typing import Callable, Awaitable, TypeVar, Optional, Any
 import aiohttp
 from logger import logger
@@ -39,6 +38,6 @@ def error_catcher(function: Callable) -> T | None:
             logger.error(f'{msg}\nJSON encoding error: {err}', exc_info=True)
         except Exception as err:
             logger.error(f"{msg}\nError: {err}", exc_info=True)
-            return None
+        return None
 
     return sync_func
