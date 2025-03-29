@@ -6,6 +6,7 @@ from typing import Dict, List, Optional
 import json
 import time
 import sys
+import aiofiles
 
 # Опционально для Windows
 if sys.platform:
@@ -71,8 +72,8 @@ class AsyncOKXParser:
 
 async def save_to_json(data: List[Dict], filename: str) -> None:
     """Сохранение в JSON"""
-    with open(filename, 'w', encoding='utf-8') as file:
-        json.dump(data, file, indent=4, ensure_ascii=False)
+    async with aiofiles.open(filename, 'w', encoding='utf-8') as file:
+        await file.write(json.dumps(data, indent=4, ensure_ascii=False))
 
 
 async def main():
