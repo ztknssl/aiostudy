@@ -4,6 +4,8 @@
 
 import asyncio
 import json
+import time
+
 from middleware import *
 from config import *
 import sys
@@ -50,10 +52,17 @@ def write_to_json(data: List[Dict[str, Dict[str, List[str]]]], filename: str) ->
 
 @async_error_catcher
 async def main():
+    start = time.time()
+
     async with aiohttp.ClientSession() as session:
         storage['session'] = session
         result = await fetch_all_order_books()
+
     write_to_json(result, FILENAME)
+    full_time = time.time() - start
+
+    logger.info(f"Готово! Результаты сохранены в {FILENAME}")
+    logger.info(f"Время выполнения: {full_time:.2f} секунд")
 
 
 if __name__ == "__main__":
