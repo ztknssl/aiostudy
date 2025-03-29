@@ -49,7 +49,7 @@ class AsyncOKXParser:
                     "data": data["data"][0] if data["data"] else None
                 }
         except Exception as e:
-            logger.error(f"Ошибка при получении ордербука для {symbol}: {str(e)}")
+            logger.error(f"Ошибка при получении ордербука для {symbol}: {str(e)}", exc_info=True)
             return {
                 "symbol": symbol,
                 "error": str(e)

@@ -1,5 +1,6 @@
 from functools import wraps
 from json import JSONDecodeError
+from sys import exc_info
 from typing import Callable, Awaitable, TypeVar, Optional, Any
 import aiohttp
 from logger import logger
@@ -15,11 +16,11 @@ def async_error_catcher(function: Callable[..., Awaitable[T]]) -> Callable[..., 
         try:
             return await function(*args, **kwargs)
         except aiohttp.ClientError as err:
-            logger.error(f"{msg}\nRequest error: {err}")
+            logger.error(f"{msg}\nRequest error: {err}", exc_info=True)
         except aiohttp.ContentTypeError as err:
-            logger.error(f"{msg}\nInvalid JSON response: {err}")
+            logger.error(f"{msg}\nInvalid JSON response: {err}", exc_info=True)
         except Exception as err:
-            logger.error(f"{msg}\nOther error: {err}")
+            logger.error(f"{msg}\nOther error: {err}", exc_info=True)
         return None
 
     return async_func
@@ -33,11 +34,11 @@ def error_catcher(function: Callable) -> T | None:
         try:
             return function(*args, **kwargs)
         except PermissionError as err:
-            logger.error(f'{msg}\nPermission denied: {err}')
+            logger.error(f'{msg}\nPermission denied: {err}', exc_info=True)
         except JSONDecodeError as err:
-            logger.error(f'{msg}\nJSON encoding error: {err}')
+            logger.error(f'{msg}\nJSON encoding error: {err}', exc_info=True)
         except Exception as err:
-            logger.error(f"{msg}\nError: {err}")
+            logger.error(f"{msg}\nError: {err}", exc_info=True)
             return None
 
     return sync_func
