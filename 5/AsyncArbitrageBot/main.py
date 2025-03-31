@@ -8,23 +8,25 @@ import sys
 if sys.platform:
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
-
+@logger.catch()
 async def main():
     async with OKX('okx') as okx:
         okx_prices = await okx.get_prices()
-        print(okx_prices)
+        print(len(okx_prices))
 
     async with Binance('binance') as binance:
         binance_prices = await binance.get_prices()
-        print(binance_prices)
+        print(len(binance_prices))
 
     async with Bybit('bybit') as bybit:
         bybit_prices = await bybit.get_prices()
-        print(bybit_prices)
+        print(len(bybit_prices))
 
 
-    final = len(set(okx_prices).intersection(set(binance_prices)).intersection(set(bybit_prices)))
-    print(final)
+    await update_coins_dicts(okx, binance, bybit)
+    print(len(okx.coins))
+    print(len(binance.coins))
+    print(len(bybit.coins))
 
 
 asyncio.run(main())
