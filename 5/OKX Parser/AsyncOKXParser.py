@@ -70,7 +70,6 @@ class AsyncOKXParser:
         return await asyncio.gather(*tasks, return_exceptions=True)
 
 
-
 async def save_to_json(data: List[Dict], filename: str) -> None:
     """Сохранение в JSON"""
     async with aiofiles.open(filename, 'w', encoding='utf-8') as file:
@@ -92,4 +91,3 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
-
